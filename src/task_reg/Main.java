@@ -12,30 +12,34 @@ import java.util.Scanner;
 
 
 public class Main {
-	static ArrayList<String> combinedList = new ArrayList<String>();
-	static String monthInMethod = "";
 	static ArrayList<String> filenames = new ArrayList<String>();
 	static ArrayList<Employee> employee = new ArrayList<Employee>();
 	static ArrayList<String> employeeNameList = new ArrayList<String>();
-	static Map<String, ArrayList<String>> taskListPerMonth = new HashMap<String, ArrayList<String>>(); //katram mēnesim apvienoti pilnīgi visi dienu faili
-
+	static Map<String, Month> monthList = new HashMap<String, Month>();
+	static String[] months= {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+	static Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();
+	
+	
 	public static void main(String[] args) throws IOException {
 		
 		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");
 		String fileUrl = "D:\\Eclipse\\workspace\\task_reg\\Task history\\";
-		Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();
-		String[] monthList= {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 		
 		
 		listFilesForFolder(folder);
-		for(int i=0; i<monthList.length; i++) {
-			monthDayFilenames.put(monthList[i], getCorrectMonth(i+1, filenames));
+		for(int i=0; i<months.length; i++) {
+			monthDayFilenames.put(months[i], getCorrectMonth(i+1, filenames));
 		}
 		
-		for(String m:monthList) { 
+		for (String m:months) {
+			Month month=new Month(m);
+			monthList.put(m, month);
+		}
+		
+		for(String m:months) {
 			ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
 				for(String d:monthDays) {
-					readDays(fileUrl+m+"\\"+d, m);
+					readDays(fileUrl+m+"\\"+d, m, d);
 				}
 		}
 		
@@ -44,20 +48,20 @@ public class Main {
 			employee.add(e);
 		}
 		
-		for(String m:monthList) { 
-			ArrayList<String> monthTasks=(ArrayList<String>)taskListPerMonth.get("January");
-			System.out.println(monthTasks);
-				
+		//nedarbojas, jāpārskata vai pareizi veido mēneša arrayList
+		for(Employee e:employee) {
+			for(String m:months) {
+				ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
+				Month monthObj = (Month) monthList.get(m);
+				monthObj.getsWholeMonthsTasks(monthDays);
+				e.getAssignetTaskCountPerMonthForGivenEmployee(monthObj.getsWholeMonthsTasks(monthDays), m);
+					/*for(String d:monthDays) {
+						monthObj.taskListPerDay.get(d));
+						
+				}*/
+			}
 		}
 		
-		
-		/*for (Employee e:employee) {
-			e.getAssignetTaskCountPerMonthForGivenEmployee(monthTaskList, month);
-		};*/
-		/*for(Employee e:employee) {
-		System.out.println(e.taskCountGotEachMonth);
-		}*/
-			
 		
 	}
 	/*
@@ -68,15 +72,18 @@ public class Main {
 	 */
 	
 	//nolasa individuālus csv failus, atgriež rindas
-	static void readDays(String url, String month) {
+	static void readDays(String url, String month, String day) {
 		try {
 			File file = new File(url);
 			Scanner read = new Scanner(file);
+			ArrayList<String> dayTasks = new ArrayList<String>();
 			while (read.hasNextLine()) {
 				String row = read.nextLine();
+				if (row.length()==0) continue;
 				addNamesToEmployeeNameList(row);
-				combinesTasksPerMonth(row, month);
+				dayTasks.add(row);
 			}
+			monthList.get(month).taskListPerDay.put(day,dayTasks);
 			read.close();
 		} catch (Exception e) {
 			System.err.println("Sumtin wen rong");
@@ -84,21 +91,6 @@ public class Main {
 		}
 	}
 	
-	//pievieno katram mēnesim atbilstošu uzdevumu sarakstu
-	public static void combinesTasksPerMonth(String row, String month) {
-		if (monthInMethod.length()==0) monthInMethod=month;
-		if (month.equals(monthInMethod)) { //pirmo iterāciju nenostrādās, jāizdomā kā apiet
-			combinesOneMonthTaskInOneList(row);
-		}
-		else if (!month.equals(monthInMethod)) {
-			taskListPerMonth.put(monthInMethod,combinedList);
-			monthInMethod=month;
-		}
-	}
-	
-	public static void combinesOneMonthTaskInOneList(String row){
-		combinedList.add(row);
-	}
 	
 	//savieto vārdus sarakstā
 	public static void addNamesToEmployeeNameList(String row) {
@@ -139,23 +131,6 @@ public class Main {
 	        }
 	    }
 	}
-	
-	
-	//atlasa saņemto darbu skaitu katrā mēnesī konkrētajam darbiniekam
-	/*public static Map<String, Integer> getAssignetTaskCountPerMonthForGivenEmployee(String row, String month, String name){
-		Map<String, Integer> taskCountGotEachMonth = new HashMap<String, Integer>();
 		
-		taskPerMonthForGivenEmployee(row, name);
-		
-		return taskCountGotEachMonth;
-		
-	}
-	
-	public static int taskPerMonthForGivenEmployee(String row, String name) {
-		int taskCounter = 0;
-		if(name.equals(row.split(";")[0])) taskCounter++;
-		return taskCounter;
-	}*/
-	
 	
 }

@@ -1,7 +1,6 @@
 package task_reg;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 //jāsaliek getters and setters
 public class Employee {
@@ -24,7 +23,8 @@ public class Employee {
 	public int taskPerMonthForGivenEmployee(ArrayList<String> monthTaskList) {
 		int taskCounter = 0;
 		for (String row:monthTaskList) {
-		if(this.name.equals(row.split(";")[1])) taskCounter++;
+		System.out.println(row);
+			//if(this.name.equals(row.split(";")[1])) taskCounter++;
 		}
 		return taskCounter;
 	}

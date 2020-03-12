@@ -3,7 +3,6 @@ package task_reg;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,66 +11,69 @@ import java.util.Scanner;
 
 
 public class Main {
-	static ArrayList<String> filenames = new ArrayList<String>();
-	static ArrayList<Employee> employee = new ArrayList<Employee>();
-	static ArrayList<String> employeeNameList = new ArrayList<String>();
-	static Map<String, Month> monthList = new HashMap<String, Month>();
-	static String[] months= {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-	static Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();
+	static ArrayList<String> filenames = new ArrayList<String>();//visu csv failu nosaukumi
+	static ArrayList<Employee> employee = new ArrayList<Employee>();//Employee objektu saraksts
+	static ArrayList<String> employeeNameList = new ArrayList<String>();//darbinieku vārdu saraksts (vai vajadzīgs vispār??)
+	static Map<String, Month> monthList = new HashMap<String, Month>();//Month objektu saraksts, sasaistīts ar attiecīgo mēneša nosaukumu (vai nevar veidot kā parasti ArrayList???)
+	static String[] months= {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}; //mēnešu saraksts
+	static Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();//katram mēnesim attiecīgie failu nosaukumi
 	
 	
 	public static void main(String[] args) throws IOException {
 		
-		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");
-		String fileUrl = "D:\\Eclipse\\workspace\\task_reg\\Task history\\";
+		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");		
 		
-		
+		//saliek katram mēnesim atbilstošos csv failu nosaukumus
 		listFilesForFolder(folder);
 		for(int i=0; i<months.length; i++) {
 			monthDayFilenames.put(months[i], getCorrectMonth(i+1, filenames));
 		}
 		
+		//izveido month objektu
 		for (String m:months) {
 			Month month=new Month(m);
 			monthList.put(m, month);
 		}
 		
+		//padod katra csv faila url, lai nolasītu metodē katru failu
 		for(String m:months) {
 			ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
 				for(String d:monthDays) {
-					readDays(fileUrl+m+"\\"+d, m, d);
+					readDays(folder+"\\"+m+"\\"+d, m, d);
 				}
 		}
 		
+		//izveido employee objektus
 		for(String n : employeeNameList) {
 			Employee e = new Employee(n);
 			employee.add(e);
 		}
 		
-		//nedarbojas, jāpārskata vai pareizi veido mēneša arrayList
+		//izveido katra darbinieka objektam citiem iedoto un saņemto darbu daudzumu katram mēnesim
 		for(Employee e:employee) {
 			for(String m:months) {
 				ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
 				Month monthObj = (Month) monthList.get(m);
-				monthObj.getsWholeMonthsTasks(monthDays);
-				e.getAssignetTaskCountPerMonthForGivenEmployee(monthObj.getsWholeMonthsTasks(monthDays), m);
-					/*for(String d:monthDays) {
-						monthObj.taskListPerDay.get(d));
-						
-				}*/
+				ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDays);
+				e.getTaskCountPerMonth(tasks, m);
+				e.getAssignedTaskCountPerMonth(tasks, m);
 			}
 		}
 		
+		//izprintē katra darbinieka saņemtos un citiem uzdotos darbus
+		Methods.printTaskCount();
+		//izprintē, kuram darbiniekam tikuši deleģēti visvairāk uzdevumi kopā
+		Methods.getEmployeeWithMostTasks();
+		//izprintē, kurš uzdevis visvairāk uzdevumu kopā
+		Methods.getEmployeeWhoAssignetMostTasks();
+		
 		
 	}
-	/*
-	 * readDays metode lasa katra faila rindas pēc kārtas, 
-	 * sadale pa mēnešiem nesanāk
-	 * var vienīgi pa dienām
-	 * 
-	 */
 	
-	//nolasa individuālus csv failus, atgriež rindas
+	/*nolasa individuālus csv failus pa dienām, 
+	 * un apkopo katras dienas darbu sarakstu vienā arrayList
+	 * tālāk katrai dienai HashMap piesaista tās dienas darbus
+	 */
 	static void readDays(String url, String month, String day) {
 		try {
 			File file = new File(url);
@@ -79,7 +81,6 @@ public class Main {
 			ArrayList<String> dayTasks = new ArrayList<String>();
 			while (read.hasNextLine()) {
 				String row = read.nextLine();
-				if (row.length()==0) continue;
 				addNamesToEmployeeNameList(row);
 				dayTasks.add(row);
 			}

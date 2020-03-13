@@ -39,4 +39,21 @@ public class Methods {
 		System.out.println("Visvairāk uzdevumus deleģēja: "+employeeName+"("+totalTaskCount+").");
 	}
 	
+	//nosaka, kurš uzdevis visvairāk uzdevumu, kuri ir FAILED
+	public static void getEmployeeWithMostFailedTasks() {
+		int totalFailedTaskCount = 0;
+		String employeeName = "";
+		for (Employee e : Main.employee) {
+			int failedTaskCounter=0;
+			for(String m: Main.months) {
+				failedTaskCounter += e.tasks.failed.get(m);
+			}
+			if (failedTaskCounter>totalFailedTaskCount) {
+				totalFailedTaskCount=failedTaskCounter;
+				employeeName=e.name;
+			}
+		}
+		System.out.println(employeeName + " got the bigest failed tasks count: "+totalFailedTaskCount);
+	}
+	
 }

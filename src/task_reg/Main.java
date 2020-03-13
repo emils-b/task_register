@@ -2,7 +2,11 @@ package task_reg;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +23,7 @@ public class Main {
 	static Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();//katram mēnesim attiecīgie failu nosaukumi
 	
 	
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
 		
 		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");		
 		
@@ -60,12 +64,30 @@ public class Main {
 			}
 		}
 		
+		
 		//izprintē katra darbinieka saņemtos un citiem uzdotos darbus
-		Methods.printTaskCount();
+		//Methods.printTaskCount();
+		
 		//izprintē, kuram darbiniekam tikuši deleģēti visvairāk uzdevumi kopā
-		Methods.getEmployeeWithMostTasks();
+		//Methods.getEmployeeWithMostTasks();
+		
 		//izprintē, kurš uzdevis visvairāk uzdevumu kopā
-		Methods.getEmployeeWhoAssignetMostTasks();
+		//Methods.getEmployeeWhoAssignetMostTasks();
+		
+		//izprintē, kurš uzdevis visvairāk uzdevumu kuri ir FAILED
+		//Methods.getEmployeeWithMostFailedTasks();
+		
+		Calendar c = Calendar.getInstance();
+		//c.setTime(new SimpleDateFormat("dd/M/yyyy").parse(createDateFormat()));
+		//int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		//System.out.println(dayOfWeek);
+		
+		for(String m:months) {
+			ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
+				for(String d:monthDays) {
+					System.out.println(d.substring(0,d.length()-4).replace("_", "/"));
+				}
+		}
 		
 		
 	}
@@ -131,6 +153,12 @@ public class Main {
 	                filenames.add(fileEntry.getName());
 	        }
 	    }
+	}
+	
+	//pārveido faila nosaukumu uz datuma formātu
+	public static String createDateFormat(){
+		String date = "";
+		return date;
 	}
 		
 	

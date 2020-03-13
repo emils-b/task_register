@@ -11,11 +11,12 @@ public class Employee {
 	Map<String, Integer> taskCountGotEachMonth=new HashMap<String, Integer>(); //katram mēnesism saliek saņemto darbu skaitu
 	Map<String, ArrayList<String>> timeWorkedEachMonth=new HashMap<String, ArrayList<String>>();; //nav vēl izveidots, katram mēnesism saliek darbu laiku summu par mēnesi
 	Map<String, Integer> taskCountAssignedToOthersEachMonth=new HashMap<String, Integer>();; //katrā mēnesī saliek darbu skaitu kurus uzdevis citiem 
-	Map<String, Tasks> tasks; //nav vēl izveidots, katra mēneša darba profils konkrētajai personai
+	Tasks tasks; //katra mēneša darba profils konkrētajai personai
 	
 	public Employee(String name) {
-		this.name=name;
-	}
+		this.name = name;
+		this.tasks = new Tasks(this);
+	}	
 	
 	//nosaka saņemto uzdevumu skaitu atbilstoši katram mēnesim
 	public void getTaskCountPerMonth(ArrayList<String> monthTaskList, String month){

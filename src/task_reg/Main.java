@@ -2,11 +2,8 @@ package task_reg;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,8 +17,10 @@ public class Main {
 	static ArrayList<String> employeeNameList = new ArrayList<String>();//darbinieku vārdu saraksts (vai vajadzīgs vispār??)
 	static Map<String, Month> monthList = new HashMap<String, Month>();//Month objektu saraksts, sasaistīts ar attiecīgo mēneša nosaukumu (vai nevar veidot kā parasti ArrayList???)
 	static String[] months= {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}; //mēnešu saraksts
-	static Map<String, ArrayList<String>> monthDayFilenames = new LinkedHashMap<String, ArrayList<String>>();//katram mēnesim attiecīgie failu nosaukumi
-	
+	static String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};//nedēļas dienu saraksts
+	static Map<String, ArrayList<String>> monthDateFilenames = new LinkedHashMap<String, ArrayList<String>>();//katram mēnesim attiecīgie failu nosaukumi
+	static Map<String, ArrayList<String>> dayTasks = new HashMap<String, ArrayList<String>>();//salikts katrai dienai darbu saraksts
+	static Map<String, Double> successRateForDays = new HashMap<String, Double>();
 	
 	public static void main(String[] args) throws IOException, ParseException {
 		
@@ -30,7 +29,7 @@ public class Main {
 		//saliek katram mēnesim atbilstošos csv failu nosaukumus
 		listFilesForFolder(folder);
 		for(int i=0; i<months.length; i++) {
-			monthDayFilenames.put(months[i], getCorrectMonth(i+1, filenames));
+			monthDateFilenames.put(months[i], getCorrectMonth(i+1, filenames));
 		}
 		
 		//izveido month objektu
@@ -41,9 +40,9 @@ public class Main {
 		
 		//padod katra csv faila url, lai nolasītu metodē katru failu
 		for(String m:months) {
-			ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
-				for(String d:monthDays) {
-					readDays(folder+"\\"+m+"\\"+d, m, d);
+			ArrayList<String> monthDates=(ArrayList<String>)monthDateFilenames.get(m);
+				for(String d:monthDates) {
+					readDates(folder+"\\"+m+"\\"+d, m, d);
 				}
 		}
 		
@@ -56,9 +55,9 @@ public class Main {
 		//izveido katra darbinieka objektam citiem iedoto un saņemto darbu daudzumu katram mēnesim
 		for(Employee e:employee) {
 			for(String m:months) {
-				ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
+				ArrayList<String> monthDates=(ArrayList<String>)monthDateFilenames.get(m);
 				Month monthObj = (Month) monthList.get(m);
-				ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDays);
+				ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDates);
 				e.getTaskCountPerMonth(tasks, m);
 				e.getAssignedTaskCountPerMonth(tasks, m);
 			}
@@ -77,18 +76,28 @@ public class Main {
 		//izprintē, kurš uzdevis visvairāk uzdevumu kuri ir FAILED
 		//Methods.getEmployeeWithMostFailedTasks();
 		
-		Calendar c = Calendar.getInstance();
-		//c.setTime(new SimpleDateFormat("dd/M/yyyy").parse(createDateFormat()));
-		//int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-		//System.out.println(dayOfWeek);
 		
+		
+
+		Map<String, ArrayList<String>> allYearTaskList = new HashMap<String, ArrayList<String>>();	
 		for(String m:months) {
-			ArrayList<String> monthDays=(ArrayList<String>)monthDayFilenames.get(m);
-				for(String d:monthDays) {
-					System.out.println(d.substring(0,d.length()-4).replace("_", "/"));
-				}
+				ArrayList<String> monthDates=(ArrayList<String>)monthDateFilenames.get(m);
+				Month monthObj = (Month) monthList.get(m);
+				allYearTaskList.putAll(monthObj.getDayTaskList(monthDates));
+				
+			}
+		
+		for(String d:days) {
+			int totalTaskCount = Methods.getTotalTaskCount(allYearTaskList, d);
+			int totalDoneTaskCount = Methods.getDoneTaskCount(allYearTaskList, d);
+			double successRate = Methods.calcucalteSuccessRate(totalDoneTaskCount, totalTaskCount);
+			successRateForDays.put(d, successRate);
+			//System.out.println(successRate);
 		}
 		
+		//izprintē dienu ar vislielāku succes rate
+		Methods.getDayWithBigestSuccessRate(successRateForDays);
+			
 		
 	}
 	
@@ -96,17 +105,17 @@ public class Main {
 	 * un apkopo katras dienas darbu sarakstu vienā arrayList
 	 * tālāk katrai dienai HashMap piesaista tās dienas darbus
 	 */
-	static void readDays(String url, String month, String day) {
+	static void readDates(String url, String month, String date) {
 		try {
 			File file = new File(url);
 			Scanner read = new Scanner(file);
-			ArrayList<String> dayTasks = new ArrayList<String>();
+			ArrayList<String> dateTasks = new ArrayList<String>();
 			while (read.hasNextLine()) {
 				String row = read.nextLine();
 				addNamesToEmployeeNameList(row);
-				dayTasks.add(row);
+				dateTasks.add(row);
 			}
-			monthList.get(month).taskListPerDay.put(day,dayTasks);
+			monthList.get(month).taskListPerDate.put(date,dateTasks);
 			read.close();
 		} catch (Exception e) {
 			System.err.println("Sumtin wen rong");
@@ -154,12 +163,5 @@ public class Main {
 	        }
 	    }
 	}
-	
-	//pārveido faila nosaukumu uz datuma formātu
-	public static String createDateFormat(){
-		String date = "";
-		return date;
-	}
 		
-	
 }

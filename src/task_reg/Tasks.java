@@ -21,9 +21,9 @@ public class Tasks {
 	//padod taskCounter metodei apvienotu konkrēta mēneša sarakstu
 	public void sortSpecificTasks() {
 		for(String m:Main.months) {
-			ArrayList<String> monthDays=(ArrayList<String>)Main.monthDayFilenames.get(m);
+			ArrayList<String> monthDates=(ArrayList<String>)Main.monthDateFilenames.get(m);
 			Month monthObj = (Month) Main.monthList.get(m);
-			ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDays);
+			ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDates);
 			taskCounter(tasks, m);
 		}
 	}

@@ -44,18 +44,11 @@ public class Tasks {
 			//if(t.split(";")[2].equals("REDIRECTED")&&t.split(";")[1].equals(employee.name)) redirectedCounter++;
 			}
 		}
-		
 		this.done.put(month,doneCounter);
 		this.failed.put(month,failedCounter);
 		this.cancelled.put(month,cancelledCounter);
 		this.bossdidit.put(month,bossdiditCounter);
 		//this.redirected.put(month,redirectedCounter);
-		
-		//System.out.println(employee.name+" "+" "+month+" "+doneCounter+ "done");
-		//System.out.println(employee.name+" "+" "+month+" "+failedCounter + "failed");
-		//System.out.println(employee.name+" "+" "+month+" "+cancelledCounter + "cancelled");
-		//System.out.println(employee.name+" "+" "+month+" "+bossdiditCounter + "bossdidit");
-		//System.out.println(employee.name+" "+" "+month+" "+redirectedCounter + "redirected");
 	}
 
 }

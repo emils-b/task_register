@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.jfree.ui.RefineryUtilities;
+
+
 
 public class Main {
 	static ArrayList<String> filenames = new ArrayList<String>();//visu csv failu nosaukumi
@@ -24,7 +27,8 @@ public class Main {
 	
 	public static void main(String[] args) throws IOException, ParseException {
 		
-		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");		
+		final File folder = new File("D:\\Eclipse\\workspace\\task_reg\\Task history");	
+		Map<String, ArrayList<String>> allYearTaskList = new HashMap<String, ArrayList<String>>(); //visa gada uzdevumu saraksts
 		
 		//saliek katram mēnesim atbilstošos csv failu nosaukumus
 		listFilesForFolder(folder);
@@ -68,18 +72,15 @@ public class Main {
 		//Methods.printTaskCount();
 		
 		//izprintē, kuram darbiniekam tikuši deleģēti visvairāk uzdevumi kopā
-		//Methods.getEmployeeWithMostTasks();
+		Methods.getEmployeeWithMostTasks();
 		
 		//izprintē, kurš uzdevis visvairāk uzdevumu kopā
-		//Methods.getEmployeeWhoAssignetMostTasks();
+		Methods.getEmployeeWhoAssignetMostTasks();
 		
 		//izprintē, kurš uzdevis visvairāk uzdevumu kuri ir FAILED
-		//Methods.getEmployeeWithMostFailedTasks();
+		Methods.getEmployeeWithMostFailedTasks();
 		
-		
-		
-
-		Map<String, ArrayList<String>> allYearTaskList = new HashMap<String, ArrayList<String>>();	
+		//iegūst visa gada uzdevumu sarakstu
 		for(String m:months) {
 				ArrayList<String> monthDates=(ArrayList<String>)monthDateFilenames.get(m);
 				Month monthObj = (Month) monthList.get(m);
@@ -87,18 +88,39 @@ public class Main {
 				
 			}
 		
+		//aprēķina succes rate dienām
 		for(String d:days) {
 			int totalTaskCount = Methods.getTotalTaskCount(allYearTaskList, d);
 			int totalDoneTaskCount = Methods.getDoneTaskCount(allYearTaskList, d);
 			double successRate = Methods.calcucalteSuccessRate(totalDoneTaskCount, totalTaskCount);
 			successRateForDays.put(d, successRate);
-			//System.out.println(successRate);
 		}
 		
 		//izprintē dienu ar vislielāku succes rate
 		Methods.getDayWithBigestSuccessRate(successRateForDays);
-			
 		
+		//izdrukā diagramu par uzdevumu procentuālu sadali gadā
+		Diagrammo demo = new Diagrammo("Task status", allYearTaskList);  
+		demo.setSize( 560 , 367 );    
+	    RefineryUtilities.centerFrameOnScreen( demo );    
+	    demo.setVisible( true );
+	
+		
+		//izveido diagramu ar visu darbinieku seuccess rate katrā mēnesī
+		SuccesRateChart sucChart = new SuccesRateChart("Monthly success rate", 
+		         "Monthly success rate");
+			sucChart.pack( );        
+		      RefineryUtilities.centerFrameOnScreen( sucChart );        
+		      sucChart.setVisible( true );
+		
+		//izveido diagramu cik uzdevumi uzdoti katram darbiniekam katrā mēnesī
+		 taskCountChart chart = new taskCountChart(
+		         "Task count" ,
+		         "Monthly task count for employees");
+
+		      chart.pack( );
+		      RefineryUtilities.centerFrameOnScreen( chart );
+		      chart.setVisible( true );
 	}
 	
 	/*nolasa individuālus csv failus pa dienām, 

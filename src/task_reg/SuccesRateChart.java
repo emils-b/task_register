@@ -27,38 +27,15 @@ public class SuccesRateChart extends ApplicationFrame{
 		      chartPanel.setPreferredSize(new java.awt.Dimension( 560 , 367 ) );        
 		      setContentPane( chartPanel ); 
 		   }
-		   
-		   private CategoryDataset createDataset( ) {
-		      final String january = "January";        
-		      final String february = "February";        
-		      final String march = "March";        
-		      final String april = "April";        
-		      final String may = "May";        
-		      final String june = "June";        
-		      final String july = "July";       
-		      final String august = "August";        
-		      final String september = "September";        
-		      final String october = "October";        
-		      final String november = "November";        
-		      final String december = "December";
-		      final DefaultCategoryDataset dataset = 
-		      new DefaultCategoryDataset( );  
-
-		      dataset.addValue( getSuccessRate(january) , january, " ");        
-		      dataset.addValue( getSuccessRate(february) , february, " ");        
-		      dataset.addValue( getSuccessRate(march) , march, " "); 
-		      dataset.addValue( getSuccessRate(april) , april, " ");           
-		      dataset.addValue( getSuccessRate(april) , may, " ");        
-		      dataset.addValue( getSuccessRate(june) , june, " ");       
-		      dataset.addValue( getSuccessRate(july) , july, " ");        
-		      dataset.addValue( getSuccessRate(august) , august, " ");
-		      dataset.addValue( getSuccessRate(september) , september, " ");        
-		      dataset.addValue( getSuccessRate(october) , october, " ");        
-		      dataset.addValue( getSuccessRate(november) , november, " ");        
-		      dataset.addValue( getSuccessRate(december) , december, " ");               
-
-		      return dataset; 
+	   
+	   private CategoryDataset createDataset( ) {
+		   final DefaultCategoryDataset dataset = 
+				      new DefaultCategoryDataset( );  
+		   for(String m:Main.months) {
+			   dataset.addValue( getSuccessRate(m) , m, " "); 
 		   }
+		   return dataset;
+	   }
 		   
 		   public double getSuccessRate(String month) {
 			   double successRate = 0;

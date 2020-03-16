@@ -30,10 +30,10 @@ public class Diagrammo extends ApplicationFrame {
 	// kādēļ norāda, ka vērtības ir 0?
 	public PieDataset createDataset() {
 		DefaultPieDataset dataset = new DefaultPieDataset();
-		dataset.setValue("Done (%)", this.doneCountPercent);
-		dataset.setValue("Failed (%)", this.failedCountPercent);
-		dataset.setValue("Cancelled (%)", this.cancelledCountPercent);
-		dataset.setValue("Bossdidit (%)", this.bossdiditCountPercent);
+		dataset.setValue("Done (%)", Methods.getRoundedDouble(this.doneCountPercent));
+		dataset.setValue("Failed (%)", Methods.getRoundedDouble(this.failedCountPercent));
+		dataset.setValue("Cancelled (%)", Methods.getRoundedDouble(this.cancelledCountPercent));
+		dataset.setValue("Bossdidit (%)", Methods.getRoundedDouble(this.bossdiditCountPercent));
 		return dataset;
 	}
 

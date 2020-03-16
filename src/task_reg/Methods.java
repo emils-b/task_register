@@ -1,5 +1,6 @@
 package task_reg;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -113,13 +114,21 @@ public class Methods {
 	public static void getDayWithBigestSuccessRate(Map<String, Double> successRateForDays) {
 		String day = "";
 		double rate = 0;
+		
 		for(String d:Main.days) {
 			if(successRateForDays.get(d)>rate) {
 				day=d;
 				rate=successRateForDays.get(d);
 			}
 		}
-		System.out.println("Day with bigest success rate is: "+day+". With rate "+rate+"%.");
+		System.out.println("Day with bigest success rate is: "+day+". With rate "+getRoundedDouble(rate)+"%.");
+	}
+	
+	//noapaļo double vērtību 2 ciparus aiz komata
+	public static Double getRoundedDouble (Double val) {
+	DecimalFormat df2 = new DecimalFormat("#.##");
+	val = Double.parseDouble(df2.format(val));
+	return val;
 	}
 	
 	

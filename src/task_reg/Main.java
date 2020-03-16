@@ -64,6 +64,7 @@ public class Main {
 				ArrayList<String> tasks=monthObj.getsWholeMonthsTasks(monthDates);
 				e.getTaskCountPerMonth(tasks, m);
 				e.getAssignedTaskCountPerMonth(tasks, m);
+				e.getTimeWorkedPerMonth(tasks,  m);
 			}
 		}
 		

@@ -9,7 +9,7 @@ public class Employee {
 	String name;
 	//Map laikam jāveido zemāk metodē, jāsaliek arraylist pa katru mēnesi un tad tos jāapvieno vienā map
 	Map<String, Integer> taskCountGotEachMonth=new HashMap<String, Integer>(); //katram mēnesism saliek saņemto darbu skaitu
-	Map<String, ArrayList<String>> timeWorkedEachMonth=new HashMap<String, ArrayList<String>>();; //nav vēl izveidots, katram mēnesism saliek darbu laiku summu par mēnesi
+	Map<String, String> timeWorkedEachMonth=new HashMap<String, String>();; //katram mēnesism saliek darba laiku summu par mēnesi
 	Map<String, Integer> taskCountAssignedToOthersEachMonth=new HashMap<String, Integer>();; //katrā mēnesī saliek darbu skaitu kurus uzdevis citiem 
 	Tasks tasks; //katra mēneša darba profils konkrētajai personai
 	
@@ -57,6 +57,34 @@ public class Employee {
 		}
 		return taskCount;
 	}
-
+	
+	//saliek cik stundas:minūtes:sekundes ir nostrādātas konkrētajā mēnesī
+	public void getTimeWorkedPerMonth(ArrayList<String> monthTaskList, String month){
+		int hourCounter = 0;
+		int minCounter = 0;
+		int secCounter = 0;
+		String timeWorked = "";
+		for (String row:monthTaskList) {
+				if(row.length()>0&&this.name.equals(row.split(";")[1])) {
+					String[] timeArr = row.split(";")[3].split(":");
+					int[] timeArrInInt = new int[2];
+					timeArrInInt[0]=Integer.parseInt(timeArr[0]);
+					timeArrInInt[1]=Integer.parseInt(timeArr[1]);
+					minCounter+=timeArrInInt[0];
+					if(secCounter+timeArrInInt[1]>=60) {
+						minCounter+=timeArrInInt[1];
+						secCounter+=timeArrInInt[1]-60;
+						continue;
+					}
+					secCounter+=timeArrInInt[1];
+			}
+		}
+		hourCounter = minCounter/60;
+		minCounter = minCounter%60;
+		timeWorked += hourCounter+":"+minCounter+":"+secCounter;
+		System.out.println(this.name+" worked in "+month +" "+hourCounter+"h "+minCounter+"min "+secCounter+"s.");
+		this.timeWorkedEachMonth.put(month,timeWorked);
+	}
+	
 
 }

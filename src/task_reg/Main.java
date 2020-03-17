@@ -5,16 +5,20 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.jfree.ui.RefineryUtilities;
 
 
 
 public class Main {
+	static String delimiter = ";";
+	static Set<String> statussList = new HashSet<String>();//saraksts ar visiem uzdevumu statusu veidiem
 	static ArrayList<String> filenames = new ArrayList<String>();//visu csv failu nosaukumi
 	static ArrayList<Employee> employee = new ArrayList<Employee>();//Employee objektu saraksts
 	static ArrayList<String> employeeNameList = new ArrayList<String>();//darbinieku vārdu saraksts (vai vajadzīgs vispār??)
@@ -68,7 +72,7 @@ public class Main {
 			}
 		}
 		
-		
+				
 		//izprintē katra darbinieka saņemtos un citiem uzdotos darbus
 		//Methods.printTaskCount();
 		
@@ -115,7 +119,7 @@ public class Main {
 		      sucChart.setVisible( true );
 		
 		//izveido diagramu cik uzdevumi uzdoti katram darbiniekam katrā mēnesī
-		 taskCountChart chart = new taskCountChart(
+		 TaskCountChart chart = new TaskCountChart(
 		         "Task count" ,
 		         "Monthly task count for employees");
 
@@ -137,6 +141,9 @@ public class Main {
 				String row = read.nextLine();
 				addNamesToEmployeeNameList(row);
 				dateTasks.add(row);
+				if(row.split(delimiter).length>1) {
+				statussList.add(row.split(delimiter)[2]);
+				}
 			}
 			monthList.get(month).taskListPerDate.put(date,dateTasks);
 			read.close();
@@ -149,7 +156,7 @@ public class Main {
 	
 	//savieto vārdus sarakstā
 	public static void addNamesToEmployeeNameList(String row) {
-		String name = row.split(";")[0];
+		String name = row.split(delimiter)[0];
 		if (!isInNameList(employeeNameList, name)&&name.length()!=0) {
 		employeeNameList.add(name);
 		}

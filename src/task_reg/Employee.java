@@ -23,7 +23,7 @@ public class Employee {
 		int taskCounter = 0;
 		for (String row:monthTaskList) {
 			if(row.length()>0){
-				if(this.name.equals(row.split(";")[1])) taskCounter++;
+				if(this.name.equals(row.split(Main.delimiter)[1])) taskCounter++;
 			}
 		}
 		this.taskCountGotEachMonth.put(month,taskCounter);
@@ -34,7 +34,7 @@ public class Employee {
 		int taskCounter = 0;
 		for (String row:monthTaskList) {
 			if(row.length()>0){
-				if(this.name.equals(row.split(";")[0])) taskCounter++;
+				if(this.name.equals(row.split(Main.delimiter)[0])) taskCounter++;
 			}
 		}
 		this.taskCountAssignedToOthersEachMonth.put(month,taskCounter);
@@ -65,8 +65,8 @@ public class Employee {
 		int secCounter = 0;
 		String timeWorked = "";
 		for (String row:monthTaskList) {
-				if(row.length()>0&&this.name.equals(row.split(";")[1])) {
-					String[] timeArr = row.split(";")[3].split(":");
+				if(row.length()>0&&this.name.equals(row.split(Main.delimiter)[1])) {
+					String[] timeArr = row.split(Main.delimiter)[3].split(":");
 					int[] timeArrInInt = new int[2];
 					timeArrInInt[0]=Integer.parseInt(timeArr[0]);
 					timeArrInInt[1]=Integer.parseInt(timeArr[1]);

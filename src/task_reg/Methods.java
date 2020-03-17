@@ -52,16 +52,21 @@ public class Methods {
 		int totalFailedTaskCount = 0;
 		String employeeName = "";
 		for (Employee e : Main.employee) {
-			int failedTaskCounter=0;
-			for(String m: Main.months) {
-				failedTaskCounter += e.tasks.failed.get(m);
-			}
+			int failedTaskCounter=getEmployeeFailedTaskCount(e);
 			if (failedTaskCounter>totalFailedTaskCount) {
 				totalFailedTaskCount=failedTaskCounter;
 				employeeName=e.name;
 			}
 		}
 		System.out.println(employeeName + " got the bigest failed tasks count: "+totalFailedTaskCount);
+	}
+	
+	public static int getEmployeeFailedTaskCount(Employee e) {
+		int failedTaskCounter=0;
+		for(String m: Main.months) {
+			failedTaskCounter += e.tasks.statussCountPerMonth.get("FAILED").get(m);
+		}
+		return failedTaskCounter;
 	}
 	
 	//aprēķina konkrētajai dienai kopējo darbu daudzumu
@@ -85,7 +90,7 @@ public class Methods {
 		for(String d:Main.filenames) {
 			if (createDateFormat(d).equals(day)) {
 				for(String r:allYearTaskList.get(d)) {
-					if(r.length()>0 && r.split(";")[2].equals("DONE")) {
+					if(r.length()>0 && r.split(Main.delimiter)[2].equals("DONE")) {
 						doneCount++;
 					}
 				}

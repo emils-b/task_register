@@ -46,7 +46,7 @@ public class SuccesRateChart extends ApplicationFrame{
 				   for (String r:taskListPerDate.get(d)) {
 					   if(r.length()>0) {
 						   allTaskCount++;
-						   if(r.split(";")[2].equals("DONE")) {
+						   if(r.split(Main.delimiter)[2].equals("DONE")) {
 							   doneTaskCount++;
 							}
 						}

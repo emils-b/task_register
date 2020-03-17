@@ -7,9 +7,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 
-public class taskCountChart extends ApplicationFrame {
+public class TaskCountChart extends ApplicationFrame {
 
-	public taskCountChart(String applicationTitle, String chartTitle) {
+	public TaskCountChart(String applicationTitle, String chartTitle) {
 		super(applicationTitle);
 		JFreeChart lineChart = ChartFactory.createLineChart(chartTitle, "Employee", "Task count", createDataset(),
 				PlotOrientation.VERTICAL, true, true, false);
